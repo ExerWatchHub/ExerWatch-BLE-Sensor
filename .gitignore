@@ -1,3 +1,4 @@
+## C++ gitignore
 # Prerequisites
 *.d
 
@@ -30,3 +31,22 @@
 *.exe
 *.out
 *.app
+
+
+## PlatformIO gitignore
+.pioenvs
+.piolibdeps
+.clang_complete
+.gcc-flags.json
+.pio
+
+*/*/.pioenvs
+*/*/.piolibdeps
+*/*/.clang_complete
+*/*/.gcc-flags.json
+*/*/.pio
+
+
+# MacOS gitignore
+*/*/.DS_Store
+*/*/.vscode
