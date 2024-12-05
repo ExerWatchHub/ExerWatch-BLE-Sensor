@@ -2,6 +2,7 @@
 #include <vector>
 #include "ExerSense/main.h"
 #include "Tests/main.h"
+#include "Program/main.h"
 // #include "ExerSense/wifi/wifiscanner.h"
 
 /**
@@ -16,6 +17,7 @@
 using namespace std;
 #define STARTING_PROGRAM 0
 ExerSense::Tests *test;
+ExerSense::Program *program;
 // Networking::WiFiScanner *wifi_test;
 
 vector<ExerProgram *> programs;
@@ -41,6 +43,9 @@ void init_programs()
   programs.push_back(app);
   test = new ExerSense::Tests();
   programs.push_back(test);
+
+  program = new ExerSense::Program();
+  programs.push_back(program);
   // wifi_test = Networking::WiFiScanner::GetInstance();
   // programs.push_back(wifi_test);
   // Always skip i = 0 as that's the main app and it's initialized separately
