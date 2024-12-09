@@ -98,6 +98,7 @@ namespace ExerSense
       auto imu_data = StickCP2.Imu.getImuData();
 
       screen_buf->clear();
+      StickCP2.Imu.update();
       if (show_cube)
       {
         IMU3DViz::draw_3d_cube();

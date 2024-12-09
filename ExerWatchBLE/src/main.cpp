@@ -3,6 +3,7 @@
 #include "ExerSense/main.h"
 #include "Tests/main.h"
 #include "Program/main.h"
+#include "X-IMU3/main.h"
 // #include "ExerSense/wifi/wifiscanner.h"
 
 /**
@@ -18,6 +19,7 @@ using namespace std;
 #define STARTING_PROGRAM 0
 ExerSense::Tests *test;
 ExerSense::Program *program;
+ExerSense::XIMU3Program *ximu3;
 // Networking::WiFiScanner *wifi_test;
 
 vector<ExerProgram *> programs;
@@ -46,10 +48,14 @@ void init_programs()
 
   program = new ExerSense::Program();
   programs.push_back(program);
+
+  ximu3 = new ExerSense::XIMU3Program();
+  programs.push_back(ximu3);
   // wifi_test = Networking::WiFiScanner::GetInstance();
   // programs.push_back(wifi_test);
   // Always skip i = 0 as that's the main app and it's initialized separately
-  for(int i = 1; i < programs.size(); i++){
+  for (int i = 1; i < programs.size(); i++)
+  {
     programs[i]->init();
   }
 }
@@ -80,6 +86,7 @@ void loop()
   ExerSense::Button_B.read();
   ExerSense::Button_PWR.read();
   ExerProgram* p = programs[p_idx];
+  // StickCP2.Imu.update(); // This is needed to update the IMU data but it should only be called when needed, by the current program
   // print_program_debug();
   p->update();
   delay(20);

@@ -53,5 +53,33 @@ namespace ExerSense{
     print_gyr(data.gyro, {.x = pos.x + 60, .y = pos.y});
     // Serial.print(message);
   }
+
+  void send_inertial(ImuData &data, float millis)
+  {
+    // Inertial Message Format: "I,timeStamp (µs),gx,gy,gz,ax,ay,az\r\n"
+    char* msg;
+    sprintf(msg, "I,%d,%5.4f,%5.4f,%5.4f,%5.4f,%5.4f,%5.4f\r\n", millis * 1000, data.gyro.x, data.gyro.y, data.gyro.z, data.accel.x, data.accel.y, data.accel.z);
+    Serial.print(msg);
+  }
+
+  // void Reefwing_xIMU3::sendInertial(InertialMessage msg)
+  // {
+  //   // Inertial Message Format: "I,timeStamp (µs),gx,gy,gz,ax,ay,az\r\n"
+  //   Serial.print("I,");
+  //   Serial.print(msg.timeStamp);
+  //   Serial.print(",");
+  //   Serial.print(msg.gx, 4);
+  //   Serial.print(",");
+  //   Serial.print(msg.gy, 4);
+  //   Serial.print(",");
+  //   Serial.print(msg.gz, 4);
+  //   Serial.print(",");
+  //   Serial.print(msg.ax, 4);
+  //   Serial.print(",");
+  //   Serial.print(msg.ay, 4);
+  //   Serial.print(",");
+  //   Serial.print(msg.az, 4);
+  //   Serial.print("\r\n");
+  // }
 }
 #endif
