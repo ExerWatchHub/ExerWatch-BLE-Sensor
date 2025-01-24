@@ -29,6 +29,7 @@ namespace ExerSense
     void send_data_ble(exer_data_t *data);
     void send_chunk_ble();
     void init_ble();
+    void create_service(BLEServer *pServer, const char *uuid, const char *txCharUUID, const char *rxCharUUID, BLECharacteristicCallbacks *rxCharCallback = nullptr);
     void print_ble_data(Point2D pos);
     void update_ble();
 

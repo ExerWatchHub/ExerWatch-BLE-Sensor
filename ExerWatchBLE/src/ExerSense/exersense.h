@@ -93,6 +93,13 @@ namespace ExerSense
       screen_buf->printf("Sent/Seq: %d/%d", ble->totalSentPackets, seq);
     }
 
+    void print_version(Point2D pos)
+    {
+      screen_buf->setTextColor(TFT_DARKGRAY);
+      screen_buf->setCursor(pos.x, pos.y);
+      screen_buf->printf("v%s", SOFTWARE_VERSION);
+    }
+
     void update()
     {
       auto imu_data = StickCP2.Imu.getImuData();
@@ -105,6 +112,7 @@ namespace ExerSense
       }
       print_imu_data({.x = 5, .y = 90}, imu_data, elapsed, seq);
       print_time({.x = 5, .y = 65});
+      print_version({.x = 190, .y = 115});
 
       ble->update_ble();
       ble->print_ble_data({.x = 5, .y = 10});

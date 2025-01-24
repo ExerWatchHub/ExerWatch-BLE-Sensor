@@ -9,11 +9,44 @@
 
 namespace ExerSense
 {
-  ExerBLECharacteristicCallbacks *charCallbacks;
+  ExerBLECharacteristicCallbacks *exerCharCallbacks;
+  WatchBLECharacteristicCallbacks *watchCharCallbacks;
   ExerBLEServerCallbacks *serverCallbacks;
+
+  void ExerBLE::create_service(BLEServer *pServer, const char *uuid, const char* txCharUUID, const char* rxCharUUID, BLECharacteristicCallbacks *rxCharCallback)
+  {
+    BLEService *pService = pServer->createService(uuid);
+    BLEAdvertising *pAdvertising = pServer->getAdvertising();
+    // Without the following line, the service UUID won't be advertised even though it was specified in the service creation
+    // https://github.com/nkolban/ESP32_BLE_Arduino/blob/master/examples/BLE_server/BLE_server.ino#L34
+    pAdvertising->addServiceUUID(uuid);
+    pAdvertising->setScanResponse(true);
+    pAdvertising->setMinPreferred(0x06); // functions that help with iPhone connections issue
+    pAdvertising->setMinPreferred(0x12);
+
+    if (txCharUUID != NULL)
+    {
+      // Create a BLE Characteristic
+      pTxCharacteristic = pService->createCharacteristic(txCharUUID, BLECharacteristic::PROPERTY_NOTIFY);
+      pTxCharacteristic->addDescriptor(new BLE2902());
+    }
+    if(rxCharUUID != NULL){
+      pRxCharacteristic = pService->createCharacteristic(rxCharUUID, BLECharacteristic::PROPERTY_WRITE);
+      if(rxCharCallback != nullptr){
+        pRxCharacteristic->setCallbacks(rxCharCallback);
+      }
+    }
+
+    delay(100); // This seems to be absolutely needed or nothing will work... Taken from the official test_ble.cpp code, go figure...
+
+    pService->start();     // Start the service
+    pAdvertising->start(); // Start advertising
+  }
+
   void ExerBLE::init_ble()
   {
-    charCallbacks = new ExerBLECharacteristicCallbacks();
+    exerCharCallbacks = new ExerBLECharacteristicCallbacks();
+    watchCharCallbacks = new WatchBLECharacteristicCallbacks();
     serverCallbacks = new ExerBLEServerCallbacks();
     last_sent_time = millis();
     /// SETUP BLE SERVER
@@ -28,28 +61,9 @@ namespace ExerSense
     pServer->setCallbacks(serverCallbacks);
 
     // Create the BLE Service
-    // BLEService *pService = pServer->createService(SERVICE_UUID);
-    BLEService *pService = pServer->createService(EXER_BLE_SERVICE_UUID);
-    BLEAdvertising *pAdvertising = pServer->getAdvertising();
-    // Without the following line, the service UUID won't be advertised even though it was specified in the service creation
-    // https://github.com/nkolban/ESP32_BLE_Arduino/blob/master/examples/BLE_server/BLE_server.ino#L34
-    pAdvertising->addServiceUUID(EXER_BLE_SERVICE_UUID);
-    // pAdvertising->addServiceUUID(SERVICE_UUID);
-    pAdvertising->setScanResponse(true);
-    pAdvertising->setMinPreferred(0x06); // functions that help with iPhone connections issue
-    pAdvertising->setMinPreferred(0x12);
-
-    // Create a BLE Characteristic
-    pTxCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID_TX, BLECharacteristic::PROPERTY_NOTIFY);
-    pTxCharacteristic->addDescriptor(new BLE2902());
-
-    pRxCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID_RX, BLECharacteristic::PROPERTY_WRITE);
-    pRxCharacteristic->setCallbacks(charCallbacks);
-
-    delay(100); // This seems to be absolutely needed or nothing will work... Taken from the official test_ble.cpp code, go figure...
-
-    pService->start();     // Start the service
-    pAdvertising->start(); // Start advertising
+    create_service(pServer, EXER_BLE_SERVICE_UUID, EXER_CHARACTERISTIC_UUID_TX, EXER_CHARACTERISTIC_UUID_RX, exerCharCallbacks);
+    create_service(pServer, WATCH_SERVICE_UUID, WATCH_CHARACTERISTIC_UUID_TX, WATCH_CHARACTERISTIC_UUID_RX, watchCharCallbacks);
+    // BLEService *pService = pServer->createService(UART_SERVICE_UUID);
 
     Serial.println("Waiting for a client connection to send Acc data...");
   }
