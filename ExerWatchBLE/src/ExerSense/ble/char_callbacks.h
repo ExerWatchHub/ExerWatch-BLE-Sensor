@@ -28,14 +28,14 @@ public:
     std::string rxValue = pCharacteristic->getValue();
     std::string cmd;
     std::string argstr;
-    ExerBLE::GetInstance()->setConnectedDeviceName(rxValue.c_str());
     bool enableCommands = false;
 
-    if(!enableCommands){
+    if(!enableCommands)
+    {
+      ExerBLE::GetInstance()->setConnectedDeviceName(rxValue.c_str());
       return;
     }
-    
-    
+
     cmd = rxValue.substr(0, 1);
     argstr = rxValue.substr(1);
     // Serial.println(cmd.c_str());

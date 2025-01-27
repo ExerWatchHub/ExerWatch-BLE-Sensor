@@ -62,7 +62,7 @@ namespace ExerSense
 
     // Create the BLE Service
     create_service(pServer, EXER_BLE_SERVICE_UUID, EXER_CHARACTERISTIC_UUID_TX, EXER_CHARACTERISTIC_UUID_RX, exerCharCallbacks);
-    create_service(pServer, WATCH_SERVICE_UUID, WATCH_CHARACTERISTIC_UUID_TX, WATCH_CHARACTERISTIC_UUID_RX, watchCharCallbacks);
+    // create_service(pServer, WATCH_SERVICE_UUID, WATCH_CHARACTERISTIC_UUID_TX, WATCH_CHARACTERISTIC_UUID_RX, watchCharCallbacks);
     // BLEService *pService = pServer->createService(UART_SERVICE_UUID);
 
     Serial.println("Waiting for a client connection to send Acc data...");
